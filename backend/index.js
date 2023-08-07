@@ -59,6 +59,12 @@ app.use('/static',express.static('public'))
 // only looks at requests where the Content-Type header matches the type option.
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 
+
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'https://jdmatrix.vercel.app');
+  next();
+});
+
 app.use(cors({ origin: true, credentials: true }));
 
 //Defining Port on which our page is load.
