@@ -19,6 +19,21 @@ const functionSchema = mongoose.Schema({
         default:null
     }
   ,
+  assignTo: 
+    {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'employee',
+        default:null
+    }
+  ,
+  responsibility: 
+    {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'responsibility',
+        default:null
+    }
+  ,
+
   deleteStatus: { type: Boolean, default: false },
   createdAt: { type: Date, default: new Date() },
 });

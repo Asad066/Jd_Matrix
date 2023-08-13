@@ -88,7 +88,6 @@ export default function Assign_Template() {
   };
   const handleChangeTemplate = async (event) => {
     let id=event.target.value;
-    console.log(id)
     setTemplate(id);
     try {
       let template =  await fetchTemplate(id);
@@ -101,7 +100,6 @@ export default function Assign_Template() {
     }
   };
   const handleChangeAllOrganization = (event) => {
-    // console.log(event.target.value)
      let assigndata = { ...assign };
     assigndata.organization_id = event.target.value;
     setAssign(assigndata);
@@ -111,7 +109,7 @@ export default function Assign_Template() {
     fetchResponsibilities(event.target.value)
   };
 
-  console.log(assign)
+  
 
   const handleSnackClose = () => {
     setOpenSnackBar(false);
@@ -142,9 +140,33 @@ export default function Assign_Template() {
 
     return treeData;
   };
+  function findAndReplaceObject(array, _id, newObject) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i]._id === _id) {
+        array[i] = newObject;
+        break;
+      }
+      // if (array[i].children) {
+      //   findAndReplaceObject(array[i].children, _id, newObject);
+      // }
+    }
+  }
+  const handleAssign=()=>{
+    let templateDetailData={...templateDetail}
+    findAndReplaceObject(templateDetailData.functions,selectedFunction._id,selectedFunction)
+    console.log(templateDetailData);
+    setTemplateDetail(templateDetailData)
+  }
+  const handleChangeSelectedFunction=(e)=>{
+    let selectedFunctionData={...selectedFunction}
+    selectedFunctionData[e.target.name]=e.target.value;
+    console.log(selectedFunctionData)
+    setSelectedFunction(selectedFunctionData)
+  }
   const handleIconClick = (node) => {
     // Perform your specific task here
     setSelectedFunction(node)
+    // console.log(node)
     setSelectedFunctionId(node._id)
   };
   const renderTreeNodes = (nodes) => {
@@ -178,7 +200,6 @@ export default function Assign_Template() {
   // -----------------------------Handle Changes-------------------------------------
 
   const handleChangeAssignTo = (e) => {
-    console.log(e.target.value);
     let assigndata = { ...assign };
     assigndata.assign_to = e.target.value;
     setAssign(assigndata);
@@ -200,12 +221,10 @@ export default function Assign_Template() {
     prev = prev.slice(0, parseInt(index) + 1);
     setAllDepartment(prev);
 
-    console.log('********************************');
+   
     let dep_id = e.target.value;
-    console.log(e.target.value)
     const response = await axios.get(process.env.REACT_APP_BACKEND_URL + "department/" + dep_id);
     if (response.data.sub_department.length > 0) {
-      console.log(response.data.sub_department);
       let prev_departments = [...prev];
       prev_departments.push([...response.data.sub_department]);
       setAllDepartment(prev_departments);
@@ -228,8 +247,10 @@ export default function Assign_Template() {
   async function fetchTemplate(id) {
     let result=null;
     await axios.get(process.env.REACT_APP_BACKEND_URL + 'template/' + id).then((response) => {
+      let template_detail_data={template:response.data.template,functions:response.data.functions}
+      setTemplateDetail(template_detail_data)
       const functions_data = transformToTree(response.data.functions);
-      console.log(functions_data)
+      // console.log(functions_data)
 
       setFunctionTree(functions_data)
       setFunction(response.data.functions);
@@ -371,7 +392,7 @@ export default function Assign_Template() {
                   {
                     allDepartment.length > 1 ?
 
-                      console.log('sub')||
+                      
                       allDepartment.slice(1).map((sub_department, index) => {
                         return (
                           <Grid
@@ -464,34 +485,6 @@ export default function Assign_Template() {
           <MainCard sx={{marginTop:'20px'}} title="Template Detail">
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
 
-          {/* <Grid container>
-          <Grid md={4} sm={12} item >
-                    <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">Employee</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={assign.employee_id}
-                      label="Employee"
-                      onChange={handleChangeEmployee}
-                    >
-
-                      <MenuItem >{'Employee'}</MenuItem>
-                      {
-                         allEmployee.map((employee) => {
-                          return (
-                            <MenuItem key={employee._id} value={employee._id} >
-                              {employee.name}
-                            </MenuItem>
-                          );
-                        })
-                      }
-                    </Select>
-                  </FormControl>
-
-                    </Grid>
-          </Grid> */}
-
           <Grid container >
             <Grid item sm={3} md={3} lg={3}>
               {functions.length != 0 ?
@@ -517,9 +510,10 @@ export default function Assign_Template() {
                         <Select
                           labelId="demo-simple-select-label"
                           id="demo-simple-select"
-                          // value={employee}
+                          value={selectedFunction.responsibility}
                           label="Respopnsibility"
-                          // onChange={(e) => { setEmployee(e.target.value) }}
+                          name="responsibility"
+                          onChange={handleChangeSelectedFunction}
                         >
                           {
                             responsibilities.map((item) => {
@@ -535,7 +529,7 @@ export default function Assign_Template() {
 
                     </Grid>
                     <Grid md={4} sm={12} item >
-                        <Button variant="contained" >Assign</Button>
+                        <Button variant="contained" onClick={handleAssign}>Assign</Button>
 
                     </Grid>
 
@@ -581,9 +575,10 @@ export default function Assign_Template() {
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      value={assign.employee_id}
+                      value={selectedFunction.assignTo}
                       label="Employee"
-                      onChange={handleChangeEmployee}
+                      name="assignTo"
+                      onChange={handleChangeSelectedFunction}
                     >
 
                       <MenuItem >{'Employee'}</MenuItem>
@@ -606,9 +601,10 @@ export default function Assign_Template() {
                         <Select
                           labelId="demo-simple-select-label"
                           id="demo-simple-select"
-                          // value={employee}
+                          value={selectedFunction.responsibility}
                           label="Respopnsibility"
-                          // onChange={(e) => { setEmployee(e.target.value) }}
+                          name="responsibility"
+                          onChange={handleChangeSelectedFunction}
                         >
                           {
                             responsibilities.map((item) => {
@@ -624,7 +620,7 @@ export default function Assign_Template() {
 
                     </Grid>
                     <Grid md={2} sm={12} item >
-                        <Button variant="contained" >Assign</Button>
+                        <Button variant="contained" onClick={handleAssign}>Assign</Button>
 
                     </Grid>
 
