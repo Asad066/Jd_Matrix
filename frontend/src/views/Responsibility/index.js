@@ -37,7 +37,7 @@ const style = {
     borderRadius: 2,
     p: 4
 };
-const columns = [{ id: 'name', label: 'Name', minWidth: 170 },{ id: 'short_name', label: 'Short Name', minWidth: 170 },{ id: 'organization', label: 'Organization', minWidth: 170 },{ id: 'department', label: 'Department', minWidth: 170 }];
+const columns = [{ id: 'name', label: 'Name', minWidth: 170 },{ id: 'short_name', label: 'Short Name', minWidth: 170 },{ id: 'organization', label: 'Organization', minWidth: 170 },];
 
 
 
@@ -115,7 +115,7 @@ export default function Index() {
                 name:responsibility.name,
                 shortname:responsibility.shortname,
                 organization:responsibility.organization,
-                department:responsibility.department,
+                // department:responsibility.department,
 
             }).then((response)=>{
                 if(response.error==true){
@@ -141,7 +141,7 @@ export default function Index() {
                 name:modeldata.name,
                 shortname:modeldata.shortname,
                 organization:modeldata.organization,
-                department:modeldata.department,
+                // department:modeldata.department,
 
             }).then((response)=>{
                 if(response.error==true){
@@ -184,7 +184,7 @@ export default function Index() {
         fetchDepartment(model_data.organization._id);
         console.log(model_data)
         model_data.organization=model_data.organization._id
-        model_data.department=model_data.department._id
+        // model_data.department=model_data.department._id
         setModelData(model_data);
         console.log(modeldata)
         handleEditOpen();
@@ -253,7 +253,7 @@ export default function Index() {
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item xs={12}>
+                        {/* <Grid item xs={12}>
                             <FormControl fullWidth>
                                 <InputLabel id="demo-simple-select-label">Department</InputLabel>
                                 <Select
@@ -274,7 +274,7 @@ export default function Index() {
                                 }
                                 </Select>
                             </FormControl>
-                        </Grid>
+                        </Grid> */}
                         
                         <Grid item xs={12}>
                             <Button fullWidth sx={{ height: '50px', borderRadius: '8px' }} variant="outlined" onClick={submitaddform}>
@@ -317,9 +317,7 @@ export default function Index() {
                                             <TableCell key={row._id}>
                                                 {row.organization.name}
                                             </TableCell>
-                                            <TableCell key={row._id}>
-                                                {row.department.name}
-                                            </TableCell>
+                                            
                                                
                                             <TableCell key={row.name}>
                                                 <EditIcon sx={{ color: '#2196f3' }} onClick={()=>openModel(row)} />
@@ -370,7 +368,7 @@ export default function Index() {
                                                 </Select>
                                             </FormControl>
                                         </Grid>
-                                        <Grid item xs={12}>
+                                        {/* <Grid item xs={12}>
                                             <FormControl fullWidth>
                                                 <InputLabel id="demo-simple-select-label">Department</InputLabel>
                                                 <Select
@@ -391,7 +389,7 @@ export default function Index() {
                                                 }
                                                 </Select>
                                             </FormControl>
-                                        </Grid>
+                                        </Grid> */}
                                         <Grid item xs={12}>
                                             <Button fullWidth sx={{ height: '50px', borderRadius: '8px' }} variant="outlined" onClick={submiteditform}>
                                                 Edit

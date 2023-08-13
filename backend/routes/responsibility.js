@@ -10,11 +10,13 @@ import {
   restoreResponsibility,
   restoreResponsibilitys,
   getRecycleResponsibilitys,
+  getResponsibilitiesWithOrganizationId
 } from "../controllers/responsibility.js";
 
 const router = express.Router();
 
 router.get("/", getResponsibilitys);
+router.get("/organization_responsibilities/:organization_id", getResponsibilitiesWithOrganizationId);
 router.get("/recycle", getRecycleResponsibilitys);
 router.post("/", createResponsibility);
 router.patch("/:id", updateResponsibility);

@@ -11,7 +11,8 @@ import {
   restoreEmployees,
   getRecycleEmployees,
   getEmployeeDetail,
-  getEmployeesWithOraganizationId
+  getEmployeesWithOraganizationId,
+  getEmployeesWithDepartmentId
 } from "../controllers/employee.js";
 
 import multer from 'multer';
@@ -32,6 +33,7 @@ const router = express.Router();
 router.get("/", getEmployees);
 router.get("/:id", getEmployeeDetail);
 router.get("/organization_employees/:organization_id", getEmployeesWithOraganizationId);
+router.get("/department_employees/:department_id", getEmployeesWithDepartmentId);
 router.get("/recycle", getRecycleEmployees);
 router.post("/",uploadfile, createEmployee);
 router.patch("/:id",uploadfile, updateEmployee);

@@ -31,6 +31,16 @@ export const getEmployeesWithOraganizationId = async (req, res) => {
   }
 };
 
+export const getEmployeesWithDepartmentId = async (req, res) => {
+  const department_id=req.params.department_id;
+  try {
+    const employees = await Employee.find({ department:department_id}).populate(['organization','department']);
+    res.status(200).json(employees);
+  } catch (error) {
+    res.status(404).json({ error: true, message: error.message });
+  }
+};
+
 
 export const getEmployeeDetail = async (req, res) => {
   const id = req.params.id;

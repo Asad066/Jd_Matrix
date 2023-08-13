@@ -62,6 +62,8 @@ export default function Assign_Template() {
   const [submitted, setSubmitted] = React.useState(0);
   // --------------------------For Snacbar Alert-----------------------------------
   const [openSnackBar, setOpenSnackBar] = useState(false);
+  const [templateDetail, setTemplateDetail] = React.useState({});
+  const [functions, setFunction] = React.useState([]);
   const [msg, setMsg] = useState('');
   const [msgType, setMsgType] = useState('');
   const [template, setTemplate] = React.useState('');
@@ -70,7 +72,20 @@ export default function Assign_Template() {
   const [organization, setOrganization] = React.useState('');
   const [allDepartment, setAllDepartment] = React.useState([]);
   const [allEmployee, setAllEmployee] = React.useState([]);
+  const [expanded, setExpanded] = useState([]);
+  const [selectedFunction, setSelectedFunction] = React.useState('');
+  const [selectedFunctionId, setSelectedFunctionId] = React.useState('');
+  const [functionTree, setFunctionTree] = React.useState([]);
+  const [employee, setEmployee] = React.useState('');
+  const [responsibilities, setResponsibilities] = React.useState([]);
 
+  const handleToggle = (nodeId) => {
+    if (expanded.includes(nodeId)) {
+      setExpanded(expanded.filter((id) => id !== nodeId));
+    } else {
+      setExpanded([...expanded, nodeId]);
+    }
+  };
   const handleChangeTemplate = async (event) => {
     let id=event.target.value;
     console.log(id)
@@ -86,13 +101,14 @@ export default function Assign_Template() {
     }
   };
   const handleChangeAllOrganization = (event) => {
+    // console.log(event.target.value)
      let assigndata = { ...assign };
     assigndata.organization_id = event.target.value;
     setAssign(assigndata);
     setOrganization(event.target.value);
 
     fetchAllDepartments(event.target.value);
-    fetchAllEmployee(event.target.value);
+    fetchResponsibilities(event.target.value)
   };
 
   console.log(assign)
@@ -101,6 +117,63 @@ export default function Assign_Template() {
     setOpenSnackBar(false);
   };
   // --------------------------End Snacbar Alert-----------------------------------
+
+  // ===========================tree===============================================
+  const transformToTree = (functionData) => {
+    const functionMap = {};
+    const treeData = [];
+
+    // Create a map of functions using their IDs as keys
+    functionData.forEach((singleFunction) => {
+      functionMap[singleFunction._id] = { ...singleFunction, children: [] };
+    });
+
+    // Build the tree structure by assigning child functions to their parent recursively
+    functionData.forEach((singleFunction) => {
+      if (singleFunction.parent_function_id) {
+        const parentFunction = functionMap[singleFunction.parent_function_id];
+        if (parentFunction) {
+          parentFunction.children.push(functionMap[singleFunction._id]);
+        }
+      } else {
+        treeData.push(functionMap[singleFunction._id]);
+      }
+    });
+
+    return treeData;
+  };
+  const handleIconClick = (node) => {
+    // Perform your specific task here
+    setSelectedFunction(node)
+    setSelectedFunctionId(node._id)
+  };
+  const renderTreeNodes = (nodes) => {
+    return nodes.map((node) => (
+      <TreeItem
+        key={node._id}
+        nodeId={node._id.toString()}
+        label={
+          <Box sx={{ display: 'flex' }} onClick={(e) => {
+            e.stopPropagation();
+          }}>
+            {Array.isArray(node.children) && node.children.length ? (
+              <ChevronRightIcon onClick={() => handleToggle(node._id)} />
+            ) : (
+              // just align text equaly
+              <ChevronRightIcon sx={{ visibility: 'hidden' }} />
+
+            )}
+            <Box component="div" sx={{ display: 'inline', marginTop: '5px' }} onClick={() => { handleIconClick(node) }}>{node.name}</Box>
+
+          </Box>
+        }
+      >
+        {Array.isArray(node.children) ? renderTreeNodes(node.children) : null}
+      </TreeItem>
+    ));
+  };
+
+
 
   // -----------------------------Handle Changes-------------------------------------
 
@@ -111,8 +184,12 @@ export default function Assign_Template() {
     setAssign(assigndata);
   }
 
+  const fetchResponsibilities=(organization_id)=>{
+    axios.get(process.env.REACT_APP_BACKEND_URL+'responsibility/organization_responsibilities/'+organization_id).then((response)=>{
+      setResponsibilities(response.data);
+    })
+    }
   const handleChangeDepartment = async (e) => {
-    
     let assigndata = { ...assign};
     assigndata.department_id = e.target.value;
     setAssign(assigndata);
@@ -125,6 +202,7 @@ export default function Assign_Template() {
 
     console.log('********************************');
     let dep_id = e.target.value;
+    console.log(e.target.value)
     const response = await axios.get(process.env.REACT_APP_BACKEND_URL + "department/" + dep_id);
     if (response.data.sub_department.length > 0) {
       console.log(response.data.sub_department);
@@ -132,6 +210,7 @@ export default function Assign_Template() {
       prev_departments.push([...response.data.sub_department]);
       setAllDepartment(prev_departments);
     }
+    fetchAllEmployee(dep_id);
   };
 
   const handleChangeEmployee = (e) => {
@@ -149,6 +228,11 @@ export default function Assign_Template() {
   async function fetchTemplate(id) {
     let result=null;
     await axios.get(process.env.REACT_APP_BACKEND_URL + 'template/' + id).then((response) => {
+      const functions_data = transformToTree(response.data.functions);
+      console.log(functions_data)
+
+      setFunctionTree(functions_data)
+      setFunction(response.data.functions);
       result={template:response.data.template,function:response.data.functions}; 
     });
     return result;
@@ -171,8 +255,8 @@ export default function Assign_Template() {
       setAllOrganization(response.data);
     });
   }
-  function fetchAllEmployee(organization_id) {
-    axios.get(process.env.REACT_APP_BACKEND_URL + 'employee/organization_employees/'+organization_id).then((response) => {
+  function fetchAllEmployee(department_id) {
+    axios.get(process.env.REACT_APP_BACKEND_URL + 'employee/department_employees/'+department_id).then((response) => {
       setAllEmployee(response.data);
     });
   }
@@ -227,7 +311,6 @@ export default function Assign_Template() {
                 <MenuItem value={'Organization'}>{'Organization'}</MenuItem>
                 <MenuItem value={'Department'}>{'Department'}</MenuItem>
                 <MenuItem value={'Employee'}>{'Employee'}</MenuItem>
-                <MenuItem value={'Team'}>{'Team'}</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -251,13 +334,7 @@ export default function Assign_Template() {
               </Select>
             </FormControl>
           </Grid>
-
-          
-
-
-          {
-            assign.assign_to == 'Department' ?
-              <Grid md={12} sm={12} item>
+          <Grid md={12} sm={12} item>
                 <Grid container spacing={2}>
                   <Grid
                     xs={12}
@@ -329,7 +406,11 @@ export default function Assign_Template() {
 
                   }
                 </Grid>
-              </Grid> :
+              </Grid> 
+          
+
+
+          {
               assign.assign_to == 'Employee' ?
                 <Grid md={4} sm={12} item>
                   <FormControl fullWidth>
@@ -373,57 +454,281 @@ export default function Assign_Template() {
                     </FormControl>
                   </Grid> : ''
           }
-
-          <Grid md={4} sm={12} item>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Responsibility</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label="Responsibility"
-              >
-                <MenuItem value={'ORR'}>{'ORR'}</MenuItem>
-                <MenuItem value={'R'}>{'R'}</MenuItem>
-                <MenuItem value={'E'}>{'E'}</MenuItem>
-                <MenuItem value={'SR'}>{'SR'}</MenuItem>
-                <MenuItem value={'SE'}>{'SE'}</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid md={4} sm={12} item>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">StackHolders</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label="StackHolders"
-                value={assign.stackholders}
-                multiple
-                onChange={handleChangeStackHolders}
-              >
-                <MenuItem value={'ORR'}>{'Ali'}</MenuItem>
-                <MenuItem value={'R'}>{'Ahmed'}</MenuItem>
-                <MenuItem value={'E'}>{'Haseeb'}</MenuItem>
-                <MenuItem value={'SR'}>{'Hammad'}</MenuItem>
-                <MenuItem value={'SE'}>{'Sajjad'}</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            container
-            sx={{ marginTop: '50px' }}
-          >
-
-            <Button  sx={{ backgroundColor: "#5e35b1" }} variant="contained" >
-               Assign Template
-            </Button>
-          </Grid>
         </Grid>
+        
       </MainCard>
+
+      {
+        assign.assign_to=='Employee'?
+        (
+          <MainCard sx={{marginTop:'20px'}} title="Template Detail">
+      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+
+          {/* <Grid container>
+          <Grid md={4} sm={12} item >
+                    <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Employee</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={assign.employee_id}
+                      label="Employee"
+                      onChange={handleChangeEmployee}
+                    >
+
+                      <MenuItem >{'Employee'}</MenuItem>
+                      {
+                         allEmployee.map((employee) => {
+                          return (
+                            <MenuItem key={employee._id} value={employee._id} >
+                              {employee.name}
+                            </MenuItem>
+                          );
+                        })
+                      }
+                    </Select>
+                  </FormControl>
+
+                    </Grid>
+          </Grid> */}
+
+          <Grid container >
+            <Grid item sm={3} md={3} lg={3}>
+              {functions.length != 0 ?
+                <TreeView
+                  expanded={expanded}
+
+                >
+                  {renderTreeNodes(functionTree)}
+                </TreeView> : ''
+              }
+            </Grid>
+            <Grid sm={1} md={1} lg={1} sx={{ borderLeft: '1px solid #e6e6e6' }}>
+
+            </Grid>
+            <Grid item sm={8} md={8} lg={8}  >
+              {
+                selectedFunction != '' ?
+                  <Grid container sx={{ marginTop: '20px', paddingRight: '10px' }} spacing={3}>
+                    
+                    <Grid md={4} sm={12} item >
+                      <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Respopnsibility Matrix</InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          // value={employee}
+                          label="Respopnsibility"
+                          // onChange={(e) => { setEmployee(e.target.value) }}
+                        >
+                          {
+                            responsibilities.map((item) => {
+                              return (
+                                <MenuItem value={item._id}>{item.name}</MenuItem>
+                              )
+                            })
+                          }
+
+
+                        </Select>
+                      </FormControl>
+
+                    </Grid>
+                    <Grid md={4} sm={12} item >
+                        <Button variant="contained" >Assign</Button>
+
+                    </Grid>
+
+                  </Grid>
+                  :
+                  <Grid display="flex" alignItems="center" container sx={{ height: 100 }}>
+
+                    <Typography> No Function Is Selected</Typography>
+                  </Grid>
+              }
+            </Grid>
+          </Grid>
+
+
+        </Paper>
+      </MainCard>
+        ):
+        assign.assign_to=='Organization' || assign.assign_to=='Department'?
+        (
+          <MainCard sx={{marginTop:'20px'}} title="Template Detail">
+      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+          <Grid container >
+            <Grid item sm={3} md={3} lg={3}>
+              {functions.length != 0 ?
+                <TreeView
+                  expanded={expanded}
+
+                >
+                  {renderTreeNodes(functionTree)}
+                </TreeView> : ''
+              }
+            </Grid>
+            <Grid sm={1} md={1} lg={1} sx={{ borderLeft: '1px solid #e6e6e6' }}>
+
+            </Grid>
+            <Grid item sm={8} md={8} lg={8}  >
+              {
+                selectedFunction != '' ?
+                  <Grid container sx={{ marginTop: '20px', paddingRight: '10px' }} spacing={3}>
+                    <Grid md={5} sm={12} item >
+                    <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Employee</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={assign.employee_id}
+                      label="Employee"
+                      onChange={handleChangeEmployee}
+                    >
+
+                      <MenuItem >{'Employee'}</MenuItem>
+                      {
+                         allEmployee.map((employee) => {
+                          return (
+                            <MenuItem key={employee._id} value={employee._id} >
+                              {employee.name}
+                            </MenuItem>
+                          );
+                        })
+                      }
+                    </Select>
+                  </FormControl>
+
+                    </Grid>
+                    <Grid md={5} sm={12} item >
+                      <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Respopnsibility Matrix</InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          // value={employee}
+                          label="Respopnsibility"
+                          // onChange={(e) => { setEmployee(e.target.value) }}
+                        >
+                          {
+                            responsibilities.map((item) => {
+                              return (
+                                <MenuItem value={item._id}>{item.name}</MenuItem>
+                              )
+                            })
+                          }
+
+
+                        </Select>
+                      </FormControl>
+
+                    </Grid>
+                    <Grid md={2} sm={12} item >
+                        <Button variant="contained" >Assign</Button>
+
+                    </Grid>
+
+                  </Grid>
+                  :
+                  <Grid display="flex" alignItems="center" container sx={{ height: 100 }}>
+
+                    <Typography> No Function Is Selected</Typography>
+                  </Grid>
+              }
+            </Grid>
+          </Grid>
+        </Paper>
+      </MainCard>
+        ):''
+      }
+
+
+      {/* <MainCard sx={{marginTop:'20px'}} title="Template Detail">
+      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+          <Grid container >
+            <Grid item sm={3} md={3} lg={3}>
+              {functions.length != 0 ?
+                <TreeView
+                  expanded={expanded}
+
+                >
+                  {renderTreeNodes(functionTree)}
+                </TreeView> : ''
+              }
+            </Grid>
+            <Grid sm={1} md={1} lg={1} sx={{ borderLeft: '1px solid #e6e6e6' }}>
+
+            </Grid>
+            <Grid item sm={8} md={8} lg={8}  >
+              {
+                selectedFunction != '' ?
+                  <Grid container sx={{ marginTop: '20px', paddingRight: '10px' }} spacing={3}>
+                    <Grid md={4} sm={12} item >
+                    <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Employee</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={assign.employee_id}
+                      label="Employee"
+                      onChange={handleChangeEmployee}
+                    >
+
+                      <MenuItem >{'Employee'}</MenuItem>
+                      {
+                         allEmployee.map((employee) => {
+                          return (
+                            <MenuItem key={employee._id} value={employee._id} >
+                              {employee.name}
+                            </MenuItem>
+                          );
+                        })
+                      }
+                    </Select>
+                  </FormControl>
+
+                    </Grid>
+                    <Grid md={4} sm={12} item >
+                      <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Respopnsibility Matrix</InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={employee}
+                          label="Employee"
+                          onChange={(e) => { setEmployee(e.target.value) }}
+                        >
+                          {
+                            allEmployee.map((item) => {
+                              return (
+                                <MenuItem value={item._id}>{item.name}</MenuItem>
+                              )
+                            })
+                          }
+
+
+                        </Select>
+                      </FormControl>
+
+                    </Grid>
+                    <Grid md={4} sm={12} item >
+                        <Button variant="contained" >Assign</Button>
+
+                    </Grid>
+
+                  </Grid>
+                  :
+                  <Grid display="flex" alignItems="center" container sx={{ height: 100 }}>
+
+                    <Typography> No Function Is Selected</Typography>
+                  </Grid>
+              }
+            </Grid>
+          </Grid>
+
+
+        </Paper>
+      </MainCard> */}
     </>
   );
 }

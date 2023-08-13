@@ -4,7 +4,16 @@ import Designation from '../models/designation.js'
 
 export const getResponsibilitys = async (req, res) => {
   try {
-    const responsibility = await Responsibility.find({ deleteStatus: false }).populate(['organization','department']);
+    const responsibility = await Responsibility.find({ deleteStatus: false }).populate(['organization']);
+    res.status(200).json(responsibility);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+export const getResponsibilitiesWithOrganizationId = async (req, res) => {
+  const organization_id=req.params.organization_id;
+  try {
+    const responsibility = await Responsibility.find({ organization: organization_id }).populate(['organization']);
     res.status(200).json(responsibility);
   } catch (error) {
     res.status(404).json({ message: error.message });

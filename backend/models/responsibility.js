@@ -17,11 +17,12 @@ const ReponsibilitySchema = new mongoose.Schema({
       required: true,
       ref:"Organization"
     },
-    department: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref:"Department"
-    }
+
+    // department: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   required: true,
+    //   ref:"Department"
+    // }
   });
 
 //To use our schema definition, we need to convert our staffTypeSchema into a Model we can work with.
