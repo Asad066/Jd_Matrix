@@ -551,7 +551,11 @@ export default function Assign_Template() {
               }
             </Grid>
           </Grid>
-
+          <Grid display="flex" justifyContent="center" alignItems="center" container>
+                    <Button variant="contained" sx={{ backgroundColor: '#5e35b1', marginTop: '50px' }} >
+                        {'Assign Template'}
+                    </Button>
+                </Grid>
 
         </Paper>
       </MainCard>
@@ -642,6 +646,11 @@ export default function Assign_Template() {
               }
             </Grid>
           </Grid>
+          <Grid display="flex" justifyContent="center" alignItems="center" container>
+                <Button variant="contained" sx={{ backgroundColor: '#5e35b1', marginTop: '50px' }} >
+                    {'Assign Template'}
+                </Button>
+            </Grid>
         </Paper>
       </MainCard>
         ):''
