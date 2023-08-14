@@ -59,6 +59,12 @@ app.use('/static',express.static('public'))
 // only looks at requests where the Content-Type header matches the type option.
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 
+
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'https://jdmatrix.vercel.app');
+  next();
+});
+
 app.use(cors({ origin: true, credentials: true }));
 
 //Defining Port on which our page is load.
@@ -92,7 +98,7 @@ app.get("/", (req, res) => {
 
 // Connecting with MongoDB with the mongoose.connect() method.
 mongoose
-  .connect(process.env.CONNECTION_URL_LOCAL, CONNECTION_PARAMS)
+  .connect(process.env.CONNECTION_URL, CONNECTION_PARAMS)
   .then(() => app.listen(PORT, console.log(`Server running on port: ${PORT}`)))
   .catch((error) => console.log(error.message));
 
