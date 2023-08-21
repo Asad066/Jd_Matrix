@@ -34,7 +34,7 @@ const employeeSchema = mongoose.Schema({
         ref:'Role',
         required:true
   },
- 
+  templates:{type:Array,default:[]},
   deleteStatus: { type: Boolean, default: false },
   createdAt: { type: Date, default: new Date() },
 });

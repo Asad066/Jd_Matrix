@@ -2,10 +2,8 @@ import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import MainCard from 'ui-component/cards/MainCard';
 import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
 import { Grid } from '@mui/material';
 import { Link, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
@@ -13,35 +11,12 @@ import axios from 'axios';
 import Alert from 'ui-component/Alert_SnackBar/Alert_SnackBar';
 import { useState } from 'react';
 import TreeView from '@mui/lab/TreeView';
-// import TreeItem from '@mui/lab/TreeItem';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import Menu_Button from 'ui-component/Menu_Button/Menu_Button';
 import TreeItem, { treeItemClasses } from '@mui/lab/TreeItem';
-import Collapse from '@mui/material/Collapse';
-import { useSpring, animated } from '@react-spring/web';
-import PropTypes from 'prop-types';
-import { alpha, styled } from '@mui/material/styles';
-import Organisations from 'views/organizations';
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  borderRadius: 2,
-  p: 4
-};
-
-
-
-
-
 
 
 export default function Assign_Template() {
@@ -54,9 +29,6 @@ export default function Assign_Template() {
     organization_id: '',
     department_id: '',
     employee_id: '',
-    resposibility: '',
-    stackholders: [],
-    stackholders:[]
   });
 
   const [submitted, setSubmitted] = React.useState(0);
@@ -108,6 +80,7 @@ export default function Assign_Template() {
     fetchAllDepartments(event.target.value);
     fetchResponsibilities(event.target.value)
     fetchAllEmployeeOfOrganization(event.target.value)
+    fetchTemplate(template);
   };
 
   
@@ -122,12 +95,10 @@ export default function Assign_Template() {
     const functionMap = {};
     const treeData = [];
 
-    // Create a map of functions using their IDs as keys
     functionData.forEach((singleFunction) => {
       functionMap[singleFunction._id] = { ...singleFunction, children: [] };
     });
 
-    // Build the tree structure by assigning child functions to their parent recursively
     functionData.forEach((singleFunction) => {
       if (singleFunction.parent_function_id) {
         const parentFunction = functionMap[singleFunction.parent_function_id];
@@ -141,20 +112,11 @@ export default function Assign_Template() {
 
     return treeData;
   };
-  function findAndReplaceObject(array, _id, newObject) {
-    for (let i = 0; i < array.length; i++) {
-      if (array[i]._id === _id) {
-        array[i] = newObject;
-        break;
-      }
-      // if (array[i].children) {
-      //   findAndReplaceObject(array[i].children, _id, newObject);
-      // }
-    }
-  }
+
   const handleAssign=()=>{
     let templateDetailData={...templateDetail}
-    findAndReplaceObject(templateDetailData.functions,selectedFunction._id,selectedFunction)
+    console.log(templateDetailData.functions);
+    templateDetailData.functions.push(selectedFunction);
     console.log(templateDetailData);
     setTemplateDetail(templateDetailData)
   }
@@ -165,9 +127,7 @@ export default function Assign_Template() {
     setSelectedFunction(selectedFunctionData)
   }
   const handleIconClick = (node) => {
-    // Perform your specific task here
     setSelectedFunction(node)
-    // console.log(node)
     setSelectedFunctionId(node._id)
   };
   const renderTreeNodes = (nodes) => {
@@ -197,7 +157,6 @@ export default function Assign_Template() {
   };
 
 
-
   // -----------------------------Handle Changes-------------------------------------
 
   const handleChangeAssignTo = (e) => {
@@ -215,9 +174,9 @@ export default function Assign_Template() {
     let assigndata = { ...assign};
     assigndata.department_id = e.target.value;
     setAssign(assigndata);
+    fetchTemplate(template);
     let select_name = e.target.name;
     let index = select_name.split('_')[1];
-
     let prev = [...allDepartment];
     prev = prev.slice(0, parseInt(index) + 1);
     setAllDepartment(prev);
@@ -237,22 +196,18 @@ export default function Assign_Template() {
     let assigndata = { ...assign };
     assigndata.employee_id = e.target.value;
     setAssign(assigndata);
+    fetchTemplate(template);
   }
-  const handleChangeStackHolders = (e) => {
-    let assigndata = { ...assign };
-    assigndata.stackholders = e.target.value;
-    setAssign(assigndata);
-  }
+  
   // --------------------------------------------------------------------------
 
   async function fetchTemplate(id) {
     let result=null;
     await axios.get(process.env.REACT_APP_BACKEND_URL + 'template/' + id).then((response) => {
-      let template_detail_data={template:response.data.template,functions:response.data.functions}
+      let template_detail_data={template:response.data.template,functions:[]}
+      
       setTemplateDetail(template_detail_data)
       const functions_data = transformToTree(response.data.functions);
-      // console.log(functions_data)
-
       setFunctionTree(functions_data)
       setFunction(response.data.functions);
       result={template:response.data.template,function:response.data.functions}; 
@@ -288,6 +243,11 @@ export default function Assign_Template() {
     });
   }
 
+  const handleSubmit=()=>{
+    console.log('aaa')
+    console.log(assign);
+    console.log(templateDetail);
+  }
   useEffect(() => {
     fetchAllTemplates();
     fetchAllOrganization();
@@ -399,7 +359,6 @@ export default function Assign_Template() {
 
                   {
                     allDepartment.length > 1 ?
-
                       
                       allDepartment.slice(1).map((sub_department, index) => {
                         return (
@@ -438,8 +397,6 @@ export default function Assign_Template() {
               </Grid> :''
           }
           
-
-
           {
               assign.assign_to == 'Employee' ?
                 <Grid md={4} sm={12} item>
@@ -551,7 +508,11 @@ export default function Assign_Template() {
               }
             </Grid>
           </Grid>
-
+          <Grid display="flex" justifyContent="center" alignItems="center" container>
+                    <Button variant="contained" sx={{ backgroundColor: '#5e35b1', marginTop: '50px' }} >
+                        {'Assign Template'}
+                    </Button>
+                </Grid>
 
         </Paper>
       </MainCard>
@@ -642,6 +603,11 @@ export default function Assign_Template() {
               }
             </Grid>
           </Grid>
+          <Grid display="flex" justifyContent="center" alignItems="center" container>
+                    <Button variant="contained" sx={{ backgroundColor: '#5e35b1', marginTop: '50px' }} onClick={handleSubmit}>
+                        {'Assign Template'}
+                    </Button>
+                </Grid>
         </Paper>
       </MainCard>
         ):''
