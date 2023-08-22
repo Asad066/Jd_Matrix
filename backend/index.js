@@ -30,6 +30,7 @@ import LevelOfEmployeeRouter from "./routes/level_of_employee.js";
 import FunctionsRouter from "./routes/functions.js";
 import ResponsibilityRouter from "./routes/responsibility.js";
 import TemplatesRouter from "./routes/template.js";
+import assignTemplateRouter from "./routes/assignTemplate.js";
 import cloudinary from 'cloudinary';
 dotenv.config();
 
@@ -90,6 +91,7 @@ app.use("/level", LevelOfEmployeeRouter);
 app.use("/functions", FunctionsRouter);
 app.use("/template", TemplatesRouter);
 app.use("/responsibility",ResponsibilityRouter);
+app.use("/assignTemplate",assignTemplateRouter);
 
 // The app.get() responds with “Hello to ToDo App API” for requests to the root URL (/) or route.
 app.get("/", (req, res) => {
@@ -98,7 +100,7 @@ app.get("/", (req, res) => {
 
 // Connecting with MongoDB with the mongoose.connect() method.
 mongoose
-  .connect(process.env.CONNECTION_URL, CONNECTION_PARAMS)
+  .connect(process.env.CONNECTION_URL_LOCAL, CONNECTION_PARAMS)
   .then(() => app.listen(PORT, console.log(`Server running on port: ${PORT}`)))
   .catch((error) => console.log(error.message));
 

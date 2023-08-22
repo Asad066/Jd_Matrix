@@ -5,9 +5,10 @@ import mongoose from "mongoose";
 //Each schema maps to a MongoDB collection and defines the shape of the documents within that collection.
 const AssignedTemplateSchema = mongoose.Schema({
   assignTo: { type: String , required:true },
-  organizationId: { type: String,required:true },
-  departmentId: { type: String , default:null},
-  employeeId: { type: String,required:true },
+  organization_id: { type: String,required:true },
+  department_id: { type: String , default:null},
+  employee_id: { type: String,default:null },
+  template:{type: Object,required:true},
   deleteStatus: { type: Boolean, default: false },
   createdAt: { type: Date, default: new Date() },
 });

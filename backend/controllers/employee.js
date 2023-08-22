@@ -6,6 +6,7 @@ import nodemailer from "nodemailer";
 import bcrypt from "bcryptjs";
 import cloudinary from 'cloudinary';
 import fs from 'fs';
+import Department from '../models/department.js';
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -31,13 +32,49 @@ export const getEmployeesWithOraganizationId = async (req, res) => {
   }
 };
 
+// export const getEmployeesWithDepartmentId = async (req, res) => {
+//   const department_id=req.params.department_id;
+//   try {
+//     const employees = await Employee.find({ department:department_id}).populate(['organization','department']);
+//     res.status(200).json(employees);
+//   } catch (error) {
+//     res.status(404).json({ error: true, message: error.message });
+//   }
+// };
+
+async function getEmployeesForDepartment(departmentId) {
+  const employees = await Employee.find({ department: departmentId }).populate('department');
+
+  const subdepartments = await Department.find({ parent_department_id: departmentId });
+
+  for (const subdepartment of subdepartments) {
+    const subEmployees = await getEmployeesForDepartment(subdepartment._id);
+    employees.push(...subEmployees);
+  }
+
+  return employees;
+}
+
 export const getEmployeesWithDepartmentId = async (req, res) => {
-  const department_id=req.params.department_id;
+  const dep_id = req.params.department_id;
   try {
-    const employees = await Employee.find({ department:department_id}).populate(['organization','department']);
-    res.status(200).json(employees);
+    console.log(dep_id)
+    let department = await Department.findOne({ _id: dep_id }).populate('organization_id');
+    // Fetch employees using the recursive function
+    const employees = await getEmployeesForDepartment(dep_id);
+
+    const departmentdetail = {
+      error: false,
+      department: department,
+      employees: employees
+    };
+
+    res.status(200).json(departmentdetail);
   } catch (error) {
-    res.status(404).json({ error: true, message: error.message });
+    res.status(404).json({
+      error: true,
+      message: error.message
+    });
   }
 };
 

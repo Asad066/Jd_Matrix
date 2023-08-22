@@ -25,7 +25,7 @@ export default function Assign_Template() {
 
   const [assign, setAssign] = useState({
     template: [],
-    assign_to: '',
+    assignTo: '',
     organization_id: '',
     department_id: '',
     employee_id: '',
@@ -118,7 +118,7 @@ export default function Assign_Template() {
     console.log(templateDetailData.functions);
     templateDetailData.functions.push(selectedFunction);
     console.log(templateDetailData);
-    setTemplateDetail(templateDetailData)
+    setAssign({...assign,['template']:templateDetailData})
   }
   const handleChangeSelectedFunction=(e)=>{
     let selectedFunctionData={...selectedFunction}
@@ -161,7 +161,7 @@ export default function Assign_Template() {
 
   const handleChangeAssignTo = (e) => {
     let assigndata = { ...assign };
-    assigndata.assign_to = e.target.value;
+    assigndata.assignTo = e.target.value;
     setAssign(assigndata);
   }
 
@@ -234,7 +234,8 @@ export default function Assign_Template() {
   }
   function fetchAllEmployee(department_id) {
     axios.get(process.env.REACT_APP_BACKEND_URL + 'employee/department_employees/'+department_id).then((response) => {
-      setAllEmployee(response.data);
+      console.log(response.data.employees)
+      setAllEmployee(response.data.employees);
     });
   }
   function fetchAllEmployeeOfOrganization(organization_id) {
@@ -246,7 +247,14 @@ export default function Assign_Template() {
   const handleSubmit=()=>{
     console.log('aaa')
     console.log(assign);
-    console.log(templateDetail);
+    setAssign({...assign,['template']:templateDetail});
+
+
+    console.log(assign);
+    
+    axios.post(process.env.REACT_APP_BACKEND_URL+'assignTemplate',assign).then((response)=>{
+      console.log(response.data)
+    })
   }
   useEffect(() => {
     fetchAllTemplates();
@@ -290,7 +298,7 @@ export default function Assign_Template() {
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                value={assign.assign_to}
+                value={assign.assignTo}
                 label="Assign To"
                 onChange={handleChangeAssignTo}
               >
@@ -322,7 +330,7 @@ export default function Assign_Template() {
             </FormControl>
           </Grid>
           {
-            assign.assign_to!="Organization"?
+            assign.assignTo!="Organization"?
           <Grid md={12} sm={12} item>
                 <Grid container spacing={2}>
                   <Grid
@@ -398,7 +406,7 @@ export default function Assign_Template() {
           }
           
           {
-              assign.assign_to == 'Employee' ?
+              assign.assignTo == 'Employee' ?
                 <Grid md={4} sm={12} item>
                   <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">Employee</InputLabel>
@@ -423,14 +431,14 @@ export default function Assign_Template() {
                     </Select>
                   </FormControl>
                 </Grid> :
-                assign.assign_to == 'Team' ?
+                assign.assignTo == 'Team' ?
                   <Grid md={4} sm={12} item>
                     <FormControl fullWidth>
                       <InputLabel id="demo-simple-select-label">Team</InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        // value={assign.assign_to}
+                        // value={assign.assignTo}
                         label="Team"
                         // onChange={handleChangeAssignTo}
                       >
@@ -446,7 +454,7 @@ export default function Assign_Template() {
       </MainCard>
 
       {
-        assign.assign_to=='Employee'?
+        assign.assignTo=='Employee'?
         (
           <MainCard sx={{marginTop:'20px'}} title="Template Detail">
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
@@ -509,7 +517,7 @@ export default function Assign_Template() {
             </Grid>
           </Grid>
           <Grid display="flex" justifyContent="center" alignItems="center" container>
-                    <Button variant="contained" sx={{ backgroundColor: '#5e35b1', marginTop: '50px' }} >
+                    <Button variant="contained" sx={{ backgroundColor: '#5e35b1', marginTop: '50px' }} onClick={handleSubmit}>
                         {'Assign Template'}
                     </Button>
                 </Grid>
@@ -517,7 +525,7 @@ export default function Assign_Template() {
         </Paper>
       </MainCard>
         ):
-        assign.assign_to=='Organization' || assign.assign_to=='Department'?
+        assign.assignTo=='Organization' || assign.assignTo=='Department'?
         (
           <MainCard sx={{marginTop:'20px'}} title="Template Detail">
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
