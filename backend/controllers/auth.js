@@ -115,7 +115,6 @@ export const getToken = async (req, res) => {
 };
 
 export const resetPassword = async (req, res) => {
-  console.log("aaa")
   const token = req.params.token;
   const { password } = req.body;
   try {

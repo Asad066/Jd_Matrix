@@ -28,6 +28,7 @@ const FunctionDetail = Loadable(lazy(() => import('views/matrix_template/Functio
 const AddSubFunction = Loadable(lazy(() => import('views/matrix_template/SubFunction/AddSubFunction.js')));
 const Responsility = Loadable(lazy(() => import('views/Responsibility')));
 const AssignTemplate = Loadable(lazy(() => import('views/matrix_template/AssignMatrix')));
+const ViewAssignTemplate = Loadable(lazy(() => import('views/AssignTemplate')));
 
 
 // sample page routing
@@ -127,6 +128,10 @@ const MainRoutes = {
         {
             path: '/admin/assign_template/',
             element: <AssignTemplate/>
+        },
+        {
+            path: '/admin/view_assigned_template/',
+            element: <ViewAssignTemplate/>
         },
         
     ]

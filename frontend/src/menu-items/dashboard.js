@@ -111,6 +111,14 @@ const dashboard = {
             url: 'assign_template',
             icon: icons.IconUsers,
             breadcrumbs: false
+        },
+        {
+            id: 'view_assign_template',
+            title: 'View Assigned Template',
+            type: 'item',
+            url: 'view_assigned_template',
+            icon: icons.IconUsers,
+            breadcrumbs: false
         }
         
     ]

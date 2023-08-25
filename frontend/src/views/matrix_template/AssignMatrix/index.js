@@ -26,9 +26,9 @@ export default function Assign_Template() {
   const [assign, setAssign] = useState({
     template: [],
     assignTo: '',
-    organization_id: '',
-    department_id: '',
-    employee_id: '',
+    organization_id: null,
+    department_id: null,
+    employee_id: null,
   });
 
   const [submitted, setSubmitted] = React.useState(0);
@@ -50,6 +50,15 @@ export default function Assign_Template() {
   const [functionTree, setFunctionTree] = React.useState([]);
   const [employee, setEmployee] = React.useState('');
   const [responsibilities, setResponsibilities] = React.useState([]);
+  const handleClick = () => {
+      setOpenSnackBar(true);
+  };
+ 
+
+
+
+
+
 
   const handleToggle = (nodeId) => {
     if (expanded.includes(nodeId)) {
@@ -75,8 +84,8 @@ export default function Assign_Template() {
      let assigndata = { ...assign };
     assigndata.organization_id = event.target.value;
     setAssign(assigndata);
-    setOrganization(event.target.value);
 
+    setOrganization(event.target.value);
     fetchAllDepartments(event.target.value);
     fetchResponsibilities(event.target.value)
     fetchAllEmployeeOfOrganization(event.target.value)
@@ -253,7 +262,25 @@ export default function Assign_Template() {
     console.log(assign);
     
     axios.post(process.env.REACT_APP_BACKEND_URL+'assignTemplate',assign).then((response)=>{
-      console.log(response.data)
+      if (!response.data.error) {
+          setMsg(response.data.message);
+          setMsgType('success');
+          handleClick();
+          
+      }else{
+          setMsg(response.data.message);
+          setMsgType('error');
+          handleClick();
+      }
+      setAssign({
+        template: [],
+        assignTo: '',
+        organization_id: null,
+        department_id: null,
+        employee_id: null,
+      })
+      setTemplate('')
+      setAllDepartment(prevState => [])
     })
   }
   useEffect(() => {
@@ -315,7 +342,7 @@ export default function Assign_Template() {
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                value={organization}
+                value={assign.organization_id}
                 label="Organization"
                 onChange={handleChangeAllOrganization}
               >
@@ -351,14 +378,13 @@ export default function Assign_Template() {
                       >
                         <MenuItem>{"Select Designations"}</MenuItem>
                         {
-                          
-                          allDepartment.length != 0 ? allDepartment[0].map((department, index) => {
+                          allDepartment.length !== 0 ? allDepartment[0].map((department, index) => {
                             return (
                               <MenuItem key={department._id} value={department._id} name={0}>
                                 {department.name}
                               </MenuItem>
                             );
-                          }) : 'loading'
+                          }) : <MenuItem disabled>Loading...</MenuItem>
                         }
                       </Select>
                     </FormControl>
