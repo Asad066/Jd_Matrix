@@ -85,6 +85,14 @@ const dashboard = {
                     icon: icons.IconStars,
                     breadcrumbs: false
                 },
+                {
+                    id: 'stackholder',
+                    title: 'StakeHolder Nature',
+                    type: 'item',
+                    url: 'stackholder',
+                    icon: icons.IconStars,
+                    breadcrumbs: false
+                },
                 
             ]
         },

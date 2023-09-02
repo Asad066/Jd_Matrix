@@ -172,7 +172,7 @@ export const changePassword= async (req, res)=>{
   const existingUser = await User.findOne({ _id:id });
 
   if(!existingUser)
-    res.status(404).json({error:true,message:"No User Found"});
+    return res.status(404).json({error:true,message:"No User Found"});
   
 
   const existingPassword = await bcrypt.compare(
@@ -181,16 +181,16 @@ export const changePassword= async (req, res)=>{
   );
 
   if(!existingPassword)
-    res.status(400).json({error:true,message:"Incorrect Old Password"});
+  return res.status(400).json({error:true,message:"Incorrect Old Password"});
   
   const hashPassword= await bcrypt.hash(new_password,10);
 
   const updateUserPassword=await User.findByIdAndUpdate(id,{password: hashPassword},{new:true});
   
-    res.status(200).json({error:true,message:"Password Changed Successfully"});
+  return  res.status(200).json({error:true,message:"Password Changed Successfully"});
   
  }catch(error){
-    res.status(500).send({
+    return  res.status(500).send({
       error:true,
       message:error.message
     })

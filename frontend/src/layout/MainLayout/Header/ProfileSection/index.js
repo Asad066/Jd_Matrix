@@ -74,15 +74,7 @@ const ProfileSection = () => {
         }
         setOpen(false);
     };
-
-    const handleListItemClick = (event, index, route = '') => {
-        setSelectedIndex(index);
-        handleClose(event);
-
-        if (route && route !== '') {
-            navigate(route);
-        }
-    };
+    
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
     };
@@ -159,7 +151,7 @@ const ProfileSection = () => {
                                 <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}>
                                     <Box sx={{ p: 2 }}>
                                         <Stack alignItems={'end'}>
-                                            <EditIcon/>
+                                            <EditIcon onClick={()=>navigate('/admin/edit_profile')}/>
                                         </Stack>
                                         <Stack alignItems={'center'}>
                                             <Stack direction="row" spacing={0.5} alignItems="center">
@@ -224,7 +216,7 @@ const ProfileSection = () => {
                                                 <ListItemButton
                                                     sx={{ borderRadius: `${customization.borderRadius}px` }}
                                                     selected={selectedIndex === 0}
-                                                    onClick={(event) => handleListItemClick(event, 0, '/user/account-profile/profile1')}
+                                                    onClick={()=>navigate('/admin/edit_profile')}
                                                 >
                                                     <ListItemIcon>
                                                         <IconSettings stroke={1.5} size="1.3rem" />

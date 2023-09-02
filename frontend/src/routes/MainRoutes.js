@@ -27,8 +27,12 @@ const TemplateDetail = Loadable(lazy(() => import('views/matrix_template/Templat
 const FunctionDetail = Loadable(lazy(() => import('views/matrix_template/Function_detail')));
 const AddSubFunction = Loadable(lazy(() => import('views/matrix_template/SubFunction/AddSubFunction.js')));
 const Responsility = Loadable(lazy(() => import('views/Responsibility')));
+const Stakeholder = Loadable(lazy(() => import('views/StakeHolders')));
 const AssignTemplate = Loadable(lazy(() => import('views/matrix_template/AssignMatrix')));
 const ViewAssignTemplate = Loadable(lazy(() => import('views/AssignTemplate')));
+const AssignedTemplateDetail = Loadable(lazy(() => import('views/AssignTemplate/AssignedTemplateDetail')));
+const EditProfile = Loadable(lazy(() => import('views/EditProfile')));
+const ChangePassword = Loadable(lazy(() => import('views/ChangePassword')));
 
 
 // sample page routing
@@ -126,12 +130,29 @@ const MainRoutes = {
             element: <Responsility/>
         },
         {
+            path: '/admin/stackholder/',
+            element: <Stakeholder/>
+        },
+        {
             path: '/admin/assign_template/',
             element: <AssignTemplate/>
         },
         {
             path: '/admin/view_assigned_template/',
             element: <ViewAssignTemplate/>
+        },
+        {
+            path: '/admin/assigned_template_detail/:id',
+            element: <AssignedTemplateDetail/>
+        },
+        {
+            path: '/admin/edit_profile/',
+            element: <EditProfile/>
+        },
+        {
+            id:'change_password',
+            path: '/admin/change_password/',
+            element: <ChangePassword/>
         },
         
     ]

@@ -40,13 +40,11 @@ const style = {
     borderRadius: 2,
     p: 4
 };
+
 const columns = [
     { id: 'template_name', label: 'Template Name', minWidth: 170 },
     { id: 'assigned_to', label: 'Assigned To', minWidth: 170 },
 ];
-
-
-
 
 
 export default function Index() {
@@ -121,7 +119,7 @@ export default function Index() {
                                                     
                                             </TableCell>
                                             <TableCell>
-                                                <Link to={"/admin/departments/departmentDetail/"+row._id}>
+                                                <Link to={"/admin/assigned_template_detail/"+row._id}>
                                                     <FormatListBulletedIcon sx={{ color: '#2196f3', marginRight: '5px' }} />
                                                 </Link> 
                                                 <DeleteIcon sx={{ color: 'red' }} />

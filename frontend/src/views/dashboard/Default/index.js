@@ -11,16 +11,27 @@ import TotalIncomeDarkCard from './TotalIncomeDarkCard';
 import TotalIncomeLightCard from './TotalIncomeLightCard';
 import TotalGrowthBarChart from './TotalGrowthBarChart';
 import { gridSpacing } from 'store/constant';
+import axios from 'axios';
 
 // ==============================|| DEFAULT DASHBOARD ||============================== //
 
 const Dashboard = () => {
     const [isLoading, setLoading] = useState(true);
+    const [dashboardData,setDashboardData]=useState(null);
+    const fetchDashboardData=()=>{
+        axios.get(process.env.REACT_APP_BACKEND_URL+'dashboard/').then((response)=>{
+            console.log(response.data)
+            setLoading(false);
+        }).catch((err)=>{
+            console.log(err);
+        });
+    }
     useEffect(() => {
-        setLoading(false);
+        fetchDashboardData();
         var d=JSON.parse(localStorage.getItem('user'))
         
     }, []);
+
 
     return (
         <Grid container spacing={gridSpacing}>

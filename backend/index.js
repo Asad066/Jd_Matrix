@@ -29,8 +29,10 @@ import DesignationRouter from "./routes/designation.js";
 import LevelOfEmployeeRouter from "./routes/level_of_employee.js";
 import FunctionsRouter from "./routes/functions.js";
 import ResponsibilityRouter from "./routes/responsibility.js";
+import StakeholderRouter from "./routes/stakeholder.js";
 import TemplatesRouter from "./routes/template.js";
 import assignTemplateRouter from "./routes/assignTemplate.js";
+import dashboardRouter from "./routes/dashboard.js";
 import cloudinary from 'cloudinary';
 dotenv.config();
 
@@ -91,7 +93,9 @@ app.use("/level", LevelOfEmployeeRouter);
 app.use("/functions", FunctionsRouter);
 app.use("/template", TemplatesRouter);
 app.use("/responsibility",ResponsibilityRouter);
+app.use("/stakeholder",StakeholderRouter);
 app.use("/assignTemplate",assignTemplateRouter);
+app.use("/dashboard",dashboardRouter);
 
 // The app.get() responds with “Hello to ToDo App API” for requests to the root URL (/) or route.
 app.get("/", (req, res) => {
