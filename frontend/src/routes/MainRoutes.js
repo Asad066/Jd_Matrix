@@ -33,13 +33,15 @@ const ViewAssignTemplate = Loadable(lazy(() => import('views/AssignTemplate')));
 const AssignedTemplateDetail = Loadable(lazy(() => import('views/AssignTemplate/AssignedTemplateDetail')));
 const EditProfile = Loadable(lazy(() => import('views/EditProfile')));
 const ChangePassword = Loadable(lazy(() => import('views/ChangePassword')));
+const EmployeeTemplateDetail = Loadable(lazy(() => import('views/users/EmployeeTemplateDetail')));
+const AuthorizedComponent = Loadable(lazy(() => import('views/Authorization/Index')));
 
 
 // sample page routing
 const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 
 // ==============================|| MAIN ROUTING ||============================== //
-
+// DashboardDefault
 const MainRoutes = {
 
     path: '/admin',
@@ -47,112 +49,117 @@ const MainRoutes = {
     children: [
         {
             path: '/admin/dashboard',
-            element: <DashboardDefault />
+            element: <AuthorizedComponent Component={DashboardDefault}/>
         },
         {
             path: '/admin/organizations',
-            element: <OrganizationDefault />
+            element: <AuthorizedComponent Component={OrganizationDefault} />
         },
         {
             path: '/admin/organizations/organization_detail/:id',
-            element: <OrganizationDetail />
+            element: <AuthorizedComponent Component={OrganizationDetail} />
         },
         {
             path: '/admin/departments',
-            element: <DepartmentsDefault />
+            element: <AuthorizedComponent Component={DepartmentsDefault} />
         },
         {
             path: '/admin/departments/add/:org_id',
-            element: <AddDepartments />
+            element: <AuthorizedComponent Component={AddDepartments} />
         },
         {
             path: '/admin/departments/departmentDetail/:id',
-            element: <DepartmentsDetail />
+            element: <AuthorizedComponent Component={DepartmentsDetail} />
         },
         {
             path: '/admin/roles/',
-            element: <Roles/>
+            element: <AuthorizedComponent Component={Roles}/>
         },
         {
             path: '/admin/staff_type/',
-            element: <StaffType/>
+            element: <AuthorizedComponent Component={StaffType}/>
         },
         {
             path: '/admin/tier/',
-            element: <Tier/>
+            element: <AuthorizedComponent Component={Tier}/>
         },
         {
             path: '/admin/designation/',
-            element: <Designation/>
+            element: <AuthorizedComponent Component={Designation}/>
         },
         {
             path: '/admin/level/',
-            element: <LevelOfEmployee/>
+            element: <AuthorizedComponent Component={LevelOfEmployee}/>
         },
         {
             path: '/admin/users/',
-            element: <Users/>
+            element: <AuthorizedComponent Component={Users}/>
         },
         {
             path: '/admin/users/add',
-            element: <AddUser/>
+            element: <AuthorizedComponent Component={AddUser}/>
         },
         {
             path: '/admin/users/detail/:id',
-            element: <EmployeeDetail/>
+            element: <AuthorizedComponent Component={EmployeeDetail}/>
         },
         {
             path: '/admin/users/edit/:id',
-            element: <EditEmployee/>
+            element: <AuthorizedComponent Component={EditEmployee}/>
         },
         {
             path: '/admin/template/',
-            element: <MatrixTemplate/>
+            element: <AuthorizedComponent Component={MatrixTemplate}/>
         },
         {
             path: '/admin/add_template/',
-            element: <ADDMatrixTemplate/>
+            element: <AuthorizedComponent Component={ADDMatrixTemplate}/>
         },
         {
             path: '/admin/add_sub_function/:parent_id/:template_id',
-            element: <AddSubFunction/>
+            element: <AuthorizedComponent Component={AddSubFunction}/>
         },
         {
             path: '/admin/template/template_detail/:id',
-            element: <TemplateDetail/>
+            element: <AuthorizedComponent Component={TemplateDetail}/>
         },
         {
             path: '/admin/template/function_detail/:id',
-            element: <FunctionDetail/>
+            element: <AuthorizedComponent Component={FunctionDetail}/>
         },
         {
             path: '/admin/responsibility/',
-            element: <Responsility/>
+            element: <AuthorizedComponent Component={Responsility}/>
         },
         {
             path: '/admin/stackholder/',
-            element: <Stakeholder/>
+            element: <AuthorizedComponent Component={Stakeholder}/>
         },
         {
             path: '/admin/assign_template/',
-            element: <AssignTemplate/>
+            element: <AuthorizedComponent Component={AssignTemplate}/>
         },
         {
             path: '/admin/view_assigned_template/',
-            element: <ViewAssignTemplate/>
+            element: <AuthorizedComponent Component={ViewAssignTemplate}/>
         },
         {
             path: '/admin/assigned_template_detail/:id',
-            element: <AssignedTemplateDetail/>
+            element: <AuthorizedComponent Component={AssignedTemplateDetail}/>
         },
         {
             path: '/admin/edit_profile/',
-            element: <EditProfile/>
+            element: <AuthorizedComponent Component={EditProfile}/>
         },
         {
             id:'change_password',
             path: '/admin/change_password/',
-            element: <ChangePassword/>
+            element: <AuthorizedComponent Component={ChangePassword}/>
+        },
+        {
+            id:'employee_template_detail',
+            path: '/admin/employee/employee_template_detail/:employee_id/:index',
+            element: <AuthorizedComponent Component={EmployeeTemplateDetail}/>
         },
         
     ]

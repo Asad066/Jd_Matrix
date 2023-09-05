@@ -20,7 +20,7 @@ const Dashboard = () => {
     const [dashboardData,setDashboardData]=useState(null);
     const fetchDashboardData=()=>{
         axios.get(process.env.REACT_APP_BACKEND_URL+'dashboard/').then((response)=>{
-            console.log(response.data)
+            setDashboardData(response.data)
             setLoading(false);
         }).catch((err)=>{
             console.log(err);
@@ -38,18 +38,18 @@ const Dashboard = () => {
             <Grid item xs={12}>
                 <Grid container spacing={gridSpacing}>
                     <Grid item lg={4} md={6} sm={6} xs={12}>
-                        <EarningCard isLoading={isLoading} />
+                        <EarningCard isLoading={isLoading} data={dashboardData} />
                     </Grid>
                     <Grid item lg={4} md={6} sm={6} xs={12}>
-                        <TotalOrderLineChartCard isLoading={isLoading} />
+                        <TotalOrderLineChartCard isLoading={isLoading} data={dashboardData}/>
                     </Grid>
                     <Grid item lg={4} md={12} sm={12} xs={12}>
                         <Grid container spacing={gridSpacing}>
                             <Grid item sm={6} xs={12} md={6} lg={12}>
-                                <TotalIncomeDarkCard isLoading={isLoading} />
+                                <TotalIncomeDarkCard isLoading={isLoading} data={dashboardData}/>
                             </Grid>
                             <Grid item sm={6} xs={12} md={6} lg={12}>
-                                <TotalIncomeLightCard isLoading={isLoading} />
+                                <TotalIncomeLightCard isLoading={isLoading} data={dashboardData}/>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -58,7 +58,7 @@ const Dashboard = () => {
             <Grid item xs={12}>
                 <Grid container spacing={gridSpacing}>
                     <Grid item xs={12} md={12}>
-                        <TotalGrowthBarChart isLoading={isLoading} />
+                        <TotalGrowthBarChart isLoading={isLoading} data={dashboardData} />
                     </Grid>
                     
                 </Grid>

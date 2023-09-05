@@ -11,7 +11,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { Grid, Typography } from '@mui/material';
 import CardMedia from '@mui/material/CardMedia';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import img from '../../../assets/images/users/dummy_profile.png';
 import PersonIcon from '@mui/icons-material/Person';
 import MailIcon from '@mui/icons-material/Mail';
@@ -40,9 +40,10 @@ const style = {
 
 
 const columns = [
-  { id: 'name', label: 'Department', minWidth: 170 },
+  { id: 'name', label: 'Template Name', minWidth: 170 },
 ];
 export default function EmployeeDetail() {
+  const navigate=useNavigate();
   const { id } = useParams();
   const [data,setData]=useState({});
   const [page, setPage] = useState(0);
@@ -58,7 +59,7 @@ export default function EmployeeDetail() {
 
   function fetchDepartments() {
     axios.get(process.env.REACT_APP_BACKEND_URL+"tier/").then((response) => {
-      setRows(response.data);
+      // setRows(response.data);
       console.log(rows)
     });
   }
@@ -66,6 +67,8 @@ export default function EmployeeDetail() {
   function fetchEmplData () {
     axios.get(process.env.REACT_APP_BACKEND_URL+'employee/'+ id).then((response) => {
       setData(response.data)
+      // console.log(response.data)
+      setRows(response.data.employee.templates);
     })
   }
 
@@ -204,16 +207,16 @@ export default function EmployeeDetail() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                    {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,index) => {
                       return (
                     <>
                       <TableRow hover role="checkbox" tabIndex={-1} >
   
                         <TableCell>
-                          {row.level_grade}
+                          {row.template.name}
                         </TableCell>
                         <TableCell>
-                          <Link to={"/admin/users/detail/"}>
+                          <Link to={'/admin/employee/employee_template_detail/'+data.employee._id+"/"+index}>
                             <FormatListBulletedIcon sx={{ color: '#2196f3', marginRight: '5px' }} />
                           </Link>
                           <EditIcon sx={{ color: '#2196f3' }} />

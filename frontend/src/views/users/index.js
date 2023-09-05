@@ -9,36 +9,15 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import MainCard from 'ui-component/cards/MainCard';
 import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 import DeleteIcon from '@mui/icons-material/Delete';
-import TextField from '@mui/material/TextField';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
 import EditIcon from '@mui/icons-material/Edit';
-import ListAltIcon from '@mui/icons-material/ListAlt';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
-import { Grid } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import axios from 'axios';
 import { useEffect } from 'react';
 import { useState } from 'react';
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    // width: 500,
-    bgcolor: 'background.paper',
-    // border: '2px solid #000',
-    boxShadow: 24,
-    borderRadius: 2,
-    p: 4
-};
+
 const columns = [
     { id: 'name', label: 'Name', minWidth: 170 },
     { id: 'organization_id', label: 'Email', minWidth: 170 },

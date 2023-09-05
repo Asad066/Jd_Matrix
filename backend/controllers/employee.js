@@ -1,12 +1,10 @@
 import mongoose from "mongoose";
+
 import Employee from "../models/employee.js";
-import StaffType from "../models/staffType.js";
-import Tier from "../models/tier.js";
-import nodemailer from "nodemailer";
-import bcrypt from "bcryptjs";
 import cloudinary from 'cloudinary';
 import fs from 'fs';
 import Department from '../models/department.js';
+import Responsibility from "../models/responsibility.js";
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -77,17 +75,21 @@ export const getEmployeesWithDepartmentId = async (req, res) => {
     });
   }
 };
-
+ 
 
 export const getEmployeeDetail = async (req, res) => {
   const id = req.params.id;
   try {
-    let employee = await Employee.findOne({ deleteStatus: false, _id: id }).populate(['designation', 'role']);
-    const staff_id = employee.designation.staff_type;
-    const tier_id = employee.designation.level_grade;
-    const staff = await StaffType.findOne({ deleteStatus: false, _id: staff_id });
-    const tier = await Tier.findOne({ deleteStatus: false, _id: tier_id });
+    let employee = await Employee.findOne({ deleteStatus: false, _id: id })
+      .populate(['designation', 'role'])
+      .populate({
+        path: "templates.functions.responsibility",
+        model: Responsibility // Change this to the actual model name for responsibility
+      });
 
+    const staff = employee.designation.staff_type;
+    const tier = employee.designation.level_grade;
+    // You'll need to import StaffType and Tier models and retrieve them in a similar way if needed.
 
     res.status(200).json({ error: false, employee: employee, staff: staff, tier: tier });
   } catch (error) {

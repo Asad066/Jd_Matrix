@@ -1,9 +1,8 @@
-// assets
-import { IconDashboard,IconBuildingBank,IconBinaryTree2,IconUsers,IconBrandUbuntu,IconMilitaryRank,IconUserExclamation,IconStars,IconBrandApplePodcast } from '@tabler/icons';
+import { IconDashboard,IconBuildingBank,IconBinaryTree2,IconUsers,IconBrandUbuntu,IconMilitaryRank,IconUserExclamation,IconStars,IconBrandApplePodcast,IconTemplate ,IconBinaryTree,Icon360 ,IconBadges, } from '@tabler/icons';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 
 // constant
-const icons = { IconDashboard,IconBuildingBank,IconBinaryTree2,IconUsers,IconBrandUbuntu,IconMilitaryRank,IconUserExclamation,IconStars,IconBrandApplePodcast };
+const icons = { IconDashboard,IconBuildingBank,IconBinaryTree2,IconUsers,IconBrandUbuntu,IconMilitaryRank,IconUserExclamation,IconStars,IconBrandApplePodcast ,IconTemplate,IconBinaryTree,Icon360,IconBadges,};
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
 
@@ -82,7 +81,7 @@ const dashboard = {
                     title: 'Responsibility',
                     type: 'item',
                     url: 'responsibility',
-                    icon: icons.IconStars,
+                    icon: icons.IconBadges,
                     breadcrumbs: false
                 },
                 {
@@ -90,7 +89,7 @@ const dashboard = {
                     title: 'StakeHolder Nature',
                     type: 'item',
                     url: 'stackholder',
-                    icon: icons.IconStars,
+                    icon: icons.IconUsers,
                     breadcrumbs: false
                 },
                 
@@ -109,7 +108,7 @@ const dashboard = {
             title: 'Matrix Template',
             type: 'item',
             url: 'template',
-            icon: icons.IconUsers,
+            icon: icons.IconTemplate,
             breadcrumbs: false
         },
         {
@@ -117,7 +116,7 @@ const dashboard = {
             title: 'Assign Matrix Template',
             type: 'item',
             url: 'assign_template',
-            icon: icons.IconUsers,
+            icon: icons.IconBinaryTree,
             breadcrumbs: false
         },
         {
@@ -125,7 +124,7 @@ const dashboard = {
             title: 'View Assigned Template',
             type: 'item',
             url: 'view_assigned_template',
-            icon: icons.IconUsers,
+            icon: icons.Icon360,
             breadcrumbs: false
         }
         
